@@ -36,12 +36,6 @@ navigator.mediaDevices.getUserMedia({
 captureButton.addEventListener('click', () => {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Get the image data from the canvas
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    // (No color correction needed here)
-    
     // Create an image element to display the captured photo
     const imageUrl = canvas.toDataURL('image/png');
     output.src = imageUrl;
