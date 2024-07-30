@@ -19,13 +19,6 @@ navigator.mediaDevices.getUserMedia({
     }
 })
 .then(function(stream) {
-    const track = stream.getVideoTracks()[0];
-    const capabilities = track.getCapabilities();
-    
-    if (capabilities.whiteBalanceMode) {
-        track.applyConstraints({ whiteBalanceMode: 'manual', whiteBalanceValue: 5500 }); // Adjust the value as needed
-    }
-
     video.srcObject = stream;
 })
 .catch(function(error) {
