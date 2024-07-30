@@ -2,10 +2,21 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 const captureButton = document.getElementById('capture');
+const output = document.getElementById('output');
 
-// Request access to the user's webcam with the back camera (if available)
+// Set high-resolution canvas size
+const highResWidth = 1920;
+const highResHeight = 1080;
+canvas.width = highResWidth;
+canvas.height = highResHeight;
+
+// Request access to the user's webcam with the back camera (if available) and high resolution
 navigator.mediaDevices.getUserMedia({ 
-    video: { facingMode: { exact: "environment" } } 
+    video: { 
+        facingMode: { exact: "environment" },
+        width: { ideal: highResWidth },
+        height: { ideal: highResHeight }
+    }
 })
 .then(stream => {
     video.srcObject = stream;
@@ -32,4 +43,8 @@ captureButton.addEventListener('click', () => {
 
     // Put the modified image data back to the canvas
     context.putImageData(imageData, 0, 0);
+
+    // Create an image element to display the captured photo
+    const imageUrl = canvas.toDataURL('image/png');
+    output.src = imageUrl;
 });
