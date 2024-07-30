@@ -11,18 +11,25 @@ canvas.width = highResWidth;
 canvas.height = highResHeight;
 
 // Request access to the user's webcam with the back camera (if available) and high resolution
-navigator.mediaDevices.getUserMedia({ 
-    video: { 
+navigator.mediaDevices.getUserMedia({
+    video: {
         facingMode: { exact: "environment" },
         width: { ideal: highResWidth },
         height: { ideal: highResHeight }
     }
 })
-.then(stream => {
+.then(function(stream) {
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+    
+    if (capabilities.whiteBalanceMode) {
+        track.applyConstraints({ whiteBalanceMode: 'manual', whiteBalanceValue: 5500 }); // Adjust the value as needed
+    }
+
     video.srcObject = stream;
 })
-.catch(err => {
-    console.error("Error accessing the camera: ", err);
+.catch(function(error) {
+    console.log(error);
 });
 
 // Capture the image when the button is clicked
@@ -33,17 +40,8 @@ captureButton.addEventListener('click', () => {
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
 
-    // Invert the red and blue channels
-    for (let i = 0; i < data.length; i += 4) {
-        const red = data[i];
-        const blue = data[i + 2];
-        data[i] = blue;
-        data[i + 2] = red;
-    }
-
-    // Put the modified image data back to the canvas
-    context.putImageData(imageData, 0, 0);
-
+    // (No color correction needed here)
+    
     // Create an image element to display the captured photo
     const imageUrl = canvas.toDataURL('image/png');
     output.src = imageUrl;
